@@ -1,0 +1,1470 @@
+---
+title: "Cyclistic Bike Share Analysis"
+author: "Aryan Juyal"
+date: "2023-07-05"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+Welcome to my Google Data Analytics Certificate capstone project! As I progress through the many stages of this project, I will face real-world data analyst tasks, allowing me to exhibit my knowledge, abilities, and thought process.
+
+
+# About the Company
+* Cyclistic is a fictitious bike-sharing program with 5,824 bicycles and 692 docking points.
+* While most users ride for fun, about 30% use them to travel to work every day.
+* Three pricing options are available: single-ride passes, full-day passes, and annual memberships.
+* Customers that purchase a single ride or a full-day pass are casual riders.
+* Member riders are customers who purchase an annual membership.
+
+
+# Scenario
+* My title at Cyclistic is Junior data analyst in the marketing analyst team.
+* Annual members are far more profitable than casual riders, according to Cyclistic's financial analysts.
+* The marketing director believes that increasing the number of yearly subscriptions is critical to the company's future success.
+* The purpose of the marketing strategy is to turn casual riders into annual members.
+
+A six-step data analysis process will be used in this case study: Ask, Prepare, Process, Analyze, Share, and Act.
+
+
+# Step 1 : Ask questions and define the problem
+This step involves the important tasks of asking the proper questions in order to acquire enough preliminary information to steer the project in the right direction. To keep everyone in the loop as you move forward, make sure you grasp the business task and identify all essential stakeholders.
+
+
+## 1.1 Asking the right questions
+The future marketing program will be guided by three questions:
+- **How do annual members and casual users of Cyclistic bikes differ?**
+- Why would a casual rider purchase a Cyclistic annual membership?
+- How can Cyclistic use digital media to get casual riders to join?
+
+
+**The first question is the topic of this case study.**
+
+
+## 1.2 Identify the business task
+The business task is to investigate how casual and member riders use Cyclistic differently, with the goal of developing a new marketing approach to convert casual riders into annual members.
+
+
+## 1.3 Identify key stakeholders
+* **The marketing director** is in charge of creating campaigns and initiatives to promote the bike-share program.
+* **The Cyclistic executive team**, which is known for its attention to detail, will determine whether to approve the planned marketing program.
+* **The Cyclistic marketing analytics team** is a group of data analysts who collect, analyse, and report data that helps steer marketing campaigns.
+
+
+# Step 2 : Prepare the data by collecting and storing information
+This stage entails locating and retrieving the data from its current location, evaluating its integrity, credibility, and accessibility, and saving the data in its new location.
+
+
+## 2.1 Data Location
+* Divvy, a Chicago-based bike-share firm, provided the data for this research.
+* All data comes from Divvy’s public data link : [Divvy Trip Data](https://ride.divvybikes.com/system-data).
+ 
+ 
+## 2.2 Data Organization
+* The historical trip data on Divvy is organised by month and year and saved as a zip file.
+* Each csv file is organised into rows and columns.
+
+
+## 2.3 Credibility of the Data/Data Bias
+* This data is Reliable, Original, Comprehensive, Current, and Cited, and it is derived from Divvy's public historical trip data. It is credible and unbiased.
+
+
+## 2.4 Licensing, Privacy, Security, and Accessibility
+* Motivate International Inc. maintains and makes the data available under this [licence](https://ride.divvybikes.com/data-license-agreement).
+* Divvy's trip data for public use adheres to data-privacy rules and is thus anonymized and does not contain any personally identifiable information.
+* Divvy's public travel data is shared on a monthly basis and is available to everybody.
+
+
+## 2.5 Download the Data and store it appropriately
+* I chose data files for the 12 months from November 2021 through October 2022 for my project.
+* To keep the files organized and easy to recognize, each file was downloaded, saved as a .csv file, and consistently labelled.
+
+
+## 2.6 Sort and Filter the data in Excel
+* Excel was used to open each monthly file.
+* I made a note of the number of records in each file.
+* I went through each file and looked for duplicate records.
+* Each file was checked for blank/NA records.
+* Identified station names and ids with "test" - will go deeper in future steps to catch everything
+
+Summary of my initial Data Review: 
+
+![Data Review Summary](data_summary1.png)
+
+![Data Review Summary](data_summary2.png)
+
+
+## 2.7 Utilize R and RStudio
+Because the files are too vast to handle in Excel, I decided to continue working on this project with the R programming language and RStudio.
+
+
+## 2.8 Install and load R packages to use for this project
+* tidyverse for data import and wrangling
+* lubridate for date functions
+* ggplot for visualization
+* skimr provides a broad overview of a data frame
+
+
+### Install the packages
+
+```{r echo=TRUE, warning=FALSE}
+install.packages("tidyverse")
+```
+
+```{r echo=TRUE, warning=FALSE}
+install.packages("lubridate")
+```
+
+```{r echo=TRUE, warning=FALSE}
+install.packages("ggplot2")
+```
+
+```{r echo=TRUE, warning=FALSE}
+install.packages("skimr")
+```
+
+
+### Load the packages
+
+```{r echo=TRUE, warning=FALSE}
+library(tidyverse)
+```
+
+```{r echo=TRUE, warning=FALSE}
+library(lubridate)
+```
+
+```{r echo=TRUE, warning=FALSE}
+library(ggplot2)
+library(skimr)
+```
+
+
+## 2.9 Upload the data files and create data frames
+Data frames are the beginning point for data analysis in R, therefore I'll read the 12 csv files I've uploaded to RStudio and label them "data1", "data2", "data3",..."data12". By referring to my initial summary table, where I noted the row and column counts for data frame, I can immediately confirm the amount of rows and columns for each file.
+
+ 
+```{r echo=TRUE, warning=FALSE}
+data1 <- read_csv("Cyclistic_bike/202111.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data2 <- read_csv("Cyclistic_bike/202112.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data3 <- read_csv("Cyclistic_bike/202201.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data4 <- read_csv("Cyclistic_bike/202202.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data5 <- read_csv("Cyclistic_bike/202203.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data6 <- read_csv("Cyclistic_bike/202204.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data7 <- read_csv("Cyclistic_bike/202205.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data8 <- read_csv("Cyclistic_bike/202206.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data9 <- read_csv("Cyclistic_bike/202207.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data10 <- read_csv("Cyclistic_bike/202208.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data11 <- read_csv("Cyclistic_bike/202209.csv")
+```
+
+```{r echo=TRUE, warning=FALSE}
+data12 <- read_csv("Cyclistic_bike/202210.csv")
+```
+
+
+## 2.10 Check for column consistency in all 12 dataframes
+Use colnames() on each new data frame to make sure all have the same 13 columns.
+
+```{r echo=TRUE, warning=FALSE}
+colnames(data1)
+```
+
+
+## 2.11 Combine 12 data frames into one data frame
+Use rbind to combine the 12 data frames into one data frame and name it, bike_rides
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides <- rbind(data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12)
+```
+
+I used the function rm() to delete the 12 individual data frames from the environment after aggregating the 12 data frames into one data frame to free up RAM.
+
+```{r echo=TRUE, warning=FALSE}
+rm(data1, data2, data3, data4, data5, data6, data7, data8, data9, data10, data11, data12)
+```
+
+
+## 2.12 Inspect the new data frame
+
+To check that my data has remained intact up to this point, I'll utilize class(), dim(), colnames(), and colSums(is.na()). At this point, I'll use my Excel observations to corroborate the following:
+
+My new dataset has been identified as a data frame with 57,55,694 rows of data.
+
+* 13 data columns
+* There are 8,78,177 occurrences when the start_station_name and start_station_id are blank.
+* There are 9,40,010 occurrences when the end_station_name and end_station_id are blank respectively.
+* There are 5,835 cases when end_lat and end_lng are both blank.
+
+
+Confirm that the dataset is a data frame
+
+```{r echo=TRUE, warning=FALSE}
+class(bike_rides)
+```
+
+Confirm the no. of rows and columns
+
+```{r echo=TRUE, warning=FALSE}
+dim(bike_rides)
+```
+
+Confirm the column names
+
+```{r echo=TRUE, warning=FALSE}
+colnames(bike_rides)
+```
+
+Confirm the blank data_fields
+
+```{r echo=TRUE, warning=FALSE}
+colSums(is.na(bike_rides))
+```
+
+
+## 2.13 Begin Exploring the data
+Understanding the data is a critical stage that should not be overlooked. It is critical to constantly provide enough time to mentally process the facts. Understand the data structure, the data types, the parameters, the dimensions, the variables, the properties of those variables, and so on.
+
+Let’s continue on with these additional functions: select(), n(row), ncol(), length(), head(), tail(), glimpse(), str(), summary(), names(), rownames(), skim_without_charts(), View()
+
+```{r echo=TRUE, warning=FALSE}
+select(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+nrow(bike_rides)
+```
+
+```{r echo=TRUE, warning=FALSE}
+ncol(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+length(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+head(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+tail(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+glimpse(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+str(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+summary(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+names(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+skim_without_charts(bike_rides)
+```
+
+
+## 2.14 Identify missing data, limitations and other data problems
+
+I'll use the is.na() method on each variable/column in my data frame to figure out what's going on where I have missing data. 
+
+I may use is.na() in conjunction with View() to generate a spreadsheet-like table and examine all rows to see if there are any patterns. 
+
+```{r echo=TRUE, warning=FALSE}
+attach(bike_rides)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(start_station_name),] 
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(start_station_id),] 
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(end_station_name),] 
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(end_station_id),] 
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(start_lat),] 
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(start_lng),] 
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(end_lat),] 
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(end_lng),]
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides[is.na(member_casual),] 
+```
+
+
+**Summary of missing data, constraints, and other issues:**
+
+Following a thorough examination of the data, I discovered the following flaws and limitations:
+
+* This public dataset has limits due to user privacy protection.
+* We can't tell if a bike user is a local or a visitor because we don't have any user demographic data; 
+* We don't know how many customers there are because we can't map bike trips to customers; 
+* We can't tell if a casual rider bike trip is associated with a single-ride pass or a full day pass because we can't map bike trips to customers.
+
+Additionally…
+
+* Some bike journeys appear to be "testing" in nature.
+* Start and finish latitude and longitude values do not have the same decimal point; decimal points range from 2 to 6 decimal points.
+
+These data columns have missing values, which we will rectify later in the process:
+* start_station_name 
+* start_station_id 
+* end_station_name 
+* end_station_id
+* end_lat
+* end_lng
+
+
+
+## 2.15 Ability to address the business task
+The historical travel data from Divvy is appropriate for answering business issues. The data supplied will assist us in understanding how casual and member users use bikes differently. While the data files give consistent columns of data, we may expand on them by applying computations and functions to gain deeper insights.
+
+While the data has various restrictions and concerns, there are no major faults that make the data worthless. We have a fantastic dataset from which we can derive numerous insights, including:
+
+* Bike type usage by customer type
+* Number of bike trips by customer type and time of the day, day of the week, season
+* Length of bike trips by customer type and time of the day, day of the week, season
+
+
+# Step 3 : Process the data by cleaning and checking the information
+This stage entails selecting tools that are appropriate for the amount of data you will be dealing with. Checking for data issues, cleaning the data, converting the data by adding, renaming, and removing data, and lastly ensuring that the data is clean and suitable for analysis are all part of the process. It's critical to stick to an organised procedure and document all of your actions so that coworkers can follow along and double-check your work.
+
+
+## 3.1 Select the tools for the project
+Since the combined dataset is very large with 5.7 million rows, R and RStudio has been chosen as the tool for data manipulation, cleaning, aggregation, analysis and visualization.
+
+
+## 3.2 Transforming the data to make it work effectively
+
+## 3.2.1 Renaming Columns
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides <- rename(bike_rides, "bike_type" = "rideable_type", "user_type" = "member_casual")
+```
+
+## 3.2.2 Ensure datetime format is consistent throughout the started_at and ended_at columns.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides$started_at <- ymd_hms(bike_rides$started_at)
+bike_rides$ended_at <- ymd_hms(bike_rides$ended_at)
+```
+
+
+## 3.2.3 Adding Columns 
+
+Adding a new column called, “ride_length_min”.
+
+Using the difftime() function to calculate the length of each trip in minutes, rounded to two decimals.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides$ride_length_min <- round(as.numeric(difftime(bike_rides$ended_at, bike_rides$started_at, units = "mins")), 2)
+```
+
+
+Verify that R recognizes my new variable as numeric so that I can perform calculations.
+
+```{r echo=TRUE, warning=FALSE}
+class(bike_rides$ride_length_min)
+```
+
+
+Adding columns for: date, month, day, year, day_of_week, and hour
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides$date <- as.Date(bike_rides$started_at)   
+bike_rides$month <- format(as.Date(bike_rides$date), "%B")
+bike_rides$day <- format(as.Date(bike_rides$date), "%d")
+bike_rides$year <- format(as.Date(bike_rides$date), "%Y")
+bike_rides$day_of_week <- format(as.Date(bike_rides$date), "%A")
+bike_rides$hour <- lubridate::hour(bike_rides$started_at)
+```
+
+
+Adding a column for season
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides <- bike_rides %>% mutate(season = recode(month,
+                        December = "Winter",
+                        January = "Winter",
+                        February = "Spring",
+                        March = "Spring",
+                        April = "Spring",
+                        May = "Summer",
+                        June = "Summer",
+                        July = "Summer",
+                        August = "Fall",
+                        September = "Fall",
+                        October = "Fall",
+                        November = "Winter"))
+```
+
+
+Adding a column for "time_of_day" using a case_when function
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides <- bike_rides %>% mutate(time_of_day = case_when(
+                        hour >= 6 & hour < 9 ~ "Early Morning",
+                        hour >= 9 & hour < 12 ~ "Mid Morning",
+                        hour >= 12 & hour < 18  ~ "Afternoon",
+                        hour >= 18 & hour <= 23  ~ "Evening",
+                        hour >= 0 & hour < 3  ~ "Early Night",
+                        hour >= 3 & hour < 6  ~ "Late Night"))
+```
+
+
+## 3.2.4 Exploring newly created column, ride_length_min
+
+Calculating where ride_length_min is greater than 1,440 minutes (or 24 hours)
+
+```{r echo=TRUE, warning=FALSE}
+sum(bike_rides$ride_length_min > 1440)
+```
+
+Calculating where ride_length_min is less than 1 minute (or 60 seconds)
+
+```{r echo=TRUE, warning=FALSE}
+sum(bike_rides$ride_length_min < 1)
+```
+
+Calculating where ride_length_min is less than 0 or a negative number.
+
+```{r echo=TRUE, warning=FALSE}
+sum(bike_rides$ride_length_min < 0)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+sum(bike_rides$started_at > bike_rides$ended_at)
+```
+
+
+```{r echo=TRUE, warning=FALSE}
+length(which(bike_rides$started_at > bike_rides$ended_at)) 
+```
+Calculating where ride_length_min is less than 0 or a negative number
+
+```{r echo=TRUE, warning=FALSE}
+sum(bike_rides$ride_length_min < 0)
+```
+
+
+Where ride_length_min is greater than 6 hours (or 360 minutes)
+
+```{r echo=TRUE, warning=FALSE}
+sum(bike_rides$ride_length_min > 360)
+```
+
+
+## 3.3 Taking a closer look at missing values
+
+Let's see if the missing start_station_id numbers are related to a specific bike or user type. We can observe that the majority of the issue is with electric bikes and does not apply to any specific user type.
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% filter(is.na(start_station_id)) %>% 
+  count(start_station_id, start_station_name, bike_type, user_type)
+```
+
+
+The missing end_station_id pertains to the three bike types and both user types, but again, the majority of the problem is with electric bikes.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% filter(is.na(end_station_id)) %>% 
+  count(end_station_id, end_station_name, bike_type, user_type)
+```
+
+Let's have a look at what else is going on in the absence of a start_station_id. What's going on with the start station name, start_lat, and start_lng. This demonstrates that the start_station name is missing, and both start_lat and start_lng are simply two decimal points.
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% filter(is.na(start_station_id)) %>% 
+  count(start_station_id, start_station_name, start_lat, start_lng)
+```
+
+Let's have a look at what else is going on in the absence of an end_station_id. I'm particularly interested in what's going on with the end station name, end_lat, and end_lng. This demonstrates that the end_station name is missing, and both start_lat and start_lng only go out two decimal points.
+
+*Adding the View() function provides a table we can then also filter on.*
+
+From this view, I can also see that there are 5,961 instances where both end_lat & end_lng are missing.
+
+
+```{r}
+bike_rides %>% filter(is.na(end_station_id)) %>% 
+  count(end_station_id, end_station_name, end_lat, end_lng)
+```
+
+
+## 3.3.1 Address missing values
+
+To account for the missing values for both start and finish station names and ids, I'll add four new columns that display start_lat, start_lng, end_lat, and end_lng, all rounded to two decimal places. I'll then use the new rounded latitude and longitude to fill in the missing start and end station names.
+
+
+Creating four new columns to show start_lat, start_lng, end_lat & end_lng all rounded to 2 decimal places.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides <- bike_rides %>% 
+  mutate(start_lat_round = round(start_lat, digits = 2),
+        start_lng_round = round(start_lng, digits = 2),
+        end_lat_round = round(end_lat, digits = 2),
+        end_lng_round = round(end_lng, digits = 2))
+```
+
+Impute missing start station names
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides <- bike_rides %>% 
+  group_by(start_lat_round, start_lng_round) %>% 
+  tidyr::fill(start_station_name, .direction = "downup") %>% 
+  ungroup()
+```
+
+Impute missing end station names
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides <- bike_rides %>% 
+  group_by(end_lat_round, end_lng_round) %>% 
+  tidyr::fill(end_station_name, .direction = "downup") %>% 
+  ungroup()
+```
+
+Impute missing start_station_id
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides <- bike_rides %>% 
+  group_by(start_station_name) %>% 
+  tidyr::fill(start_station_id, .direction = "downup") %>% 
+  ungroup()
+```
+
+Impute missing end_station_id
+
+```{r}
+bike_rides <- bike_rides %>% 
+  group_by(end_station_name) %>% 
+  tidyr::fill(end_station_id, .direction = "downup") %>% 
+  ungroup()
+```
+
+
+Now that we have imputed a lot of the missing data, let’s check missing values by column, again, and see what’s still missing.
+
+```{r echo=TRUE, warning=FALSE}
+colSums(is.na(bike_rides))
+```
+
+We don't have an end_station_name or end_station_id where end_lat and end_lng are absent, so the missing data cannot be attributed using those columns. Except for one 2-minute ride, these are all 1-minute rides.
+
+Because these are 1-minute rides with missing end-lat and end_lng, I think they're slips and will be removed. In terms of percentage, 5,961 points that are absent are regarded as insignificant and will not affect the integrity of my dataset.
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% filter(is.na(end_lat)) %>% 
+  count(end_station_name, end_station_id, end_lat, end_lng, bike_type)
+```
+
+We don't have a start_station_id to impute the missing data where the start_station_name is absent. I should be able to infer from data that has end_lat and end_lng coordinates that match. That would be more difficult because we may have numerous station names with latitude and longitude coordinates that only go out two decimal places.
+
+For the sake of time and because the amount of data is insignificant, I'm going to leave it as is and go on. I could remove this information because it is irrelevant.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% filter(is.na(start_station_name)) %>% 
+  count(start_station_name, start_station_id, start_lat, start_lng, bike_type)
+```
+
+We don't have a end_station_id to impute the missing data where the end_station_name is absent. I should be able to infer from data that has end_lat and end_lng coordinates that match. That would be more difficult because we may have numerous station names with latitude and longitude coordinates that only go out two decimal places.
+
+For the sake of time and because the amount of data is insignificant, I'm going to leave it as is and go on. I could remove this information because it is irrelevant.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% filter(is.na(end_station_name)) %>% 
+  count(end_station_name, end_station_id, end_lat, end_lng, bike_type)
+```
+
+
+
+## 3.4 Explore data related to “testing”
+
+I spotted some data connected to "testing" during my initial check of the data in Excel, so I'll dig deeper to see what I find. According to the corporate website, trips are taken by employees as they service and examine the system. These trips should be eliminated. These trips should be removed. click here [Divvy System Data](https://ride.divvybikes.com/system-data).
+
+I'll investigate more to see which trips are taken by personnel. I can identify the "test/warehouse" trips by looking at the start_station_id.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% 
+  select(start_station_id) %>% 
+  count(start_station_id) %>% 
+  arrange(desc(n))
+```
+
+Taking a look at the end_station_id allows me to identify the “test/warehouse” trips. 
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% 
+  select(end_station_id) %>% 
+  count(end_station_id) %>% 
+  arrange(desc(n))
+```
+
+I’ll use the filter function to filter on these multiple specific cases by creating a vector of values c()
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% filter(start_station_id %in% c("DIVVY 001", "DIVVY 001 - Warehouse test station", "Hubbard Bike-checking (LBS-WH-TEST)", "Pawel Bialowas - Test- PBSC charging station", "DIVVY CASSETTE REPAIR MOBILE STATION", "2059 Hastings Warehouse Station", "Hastings WH 2", "Throop/Hastings Mobile Station")) %>%
+  count(start_station_id)
+```
+
+I’ll use the filter function to filter on these multiple specific cases by creating a vector of values c()
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides %>% filter(end_station_id %in% c("DIVVY 001", "DIVVY 001 - Warehouse test station", "Hubbard Bike-checking (LBS-WH-TEST)", "Pawel Bialowas - Test- PBSC charging station", "DIVVY CASSETTE REPAIR MOBILE STATION", "2059 Hastings Warehouse Station", "Hastings WH 2", "Throop/Hastings Mobile Station")) %>% 
+  count(end_station_id)
+```
+
+
+
+## 3.5 Removing Data
+
+Following a careful evaluation of the data, I will delete the following:
+
+* Rides of less than 60 seconds because they may be false starts or users attempting to re-dock a bike to verify it was secure, according to the Divvy website: Data Distribution in the System
+* Rides with negative ride_length are invalid because the trip start time cannot be greater than the trip end time.
+* For the sake of this research, rides with a ride_length more than 24 hours are considered invalid outliers.
+* Rides where end_lat and end_lng are both missing; we don't have an end_station_name or end_station_id in these circumstances, hence the missing data cannot be imputed. In terms of percentage, 5,835 missing data points are deemed insignificant. With the exception of one 2-minute ride, these are all 1-minute rides. Because they lack end-lat and end_lng, I believe they are anomalies.
+* Rides where the start_station_id or end_station_id are related to "testing" as previously identified
+
+
+
+I’ll use the select() function to create a new data frame with only selected columns.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 <- select(bike_rides, c(1,2,5, 6:16, 13:16, 18:22))
+``` 
+
+Remove rides less than 60 seconds (or 1 minute) and greater than 24 hrs (or 1440 minutes) in length. This will remove all rides with a negative ride_length
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 <- bike_rides_v2 %>% 
+  filter(ride_length_min >= 1 & ride_length_min <= 1440)
+```
+
+Remove rides where end_lat & end_lng are both missing
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 <- bike_rides_v2 %>%
+  filter(!is.na(end_lat) & !is.na(end_lng))
+```
+
+Remove rides related to test/repair stations
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 <- bike_rides_v2 %>% 
+  filter(!start_station_id %in% c("DIVVY 001", "DIVVY 001 - Warehouse test station", "Hubbard Bike-checking (LBS-WH-TEST)", "Pawel Bialowas - Test- PBSC charging station", "DIVVY CASSETTE REPAIR MOBILE STATION", "2059 Hastings Warehouse Station", "Hastings WH 2", "Throop/Hastings Mobile Station"))
+```
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 <- bike_rides_v2 %>%
+  filter(!end_station_id %in% c("DIVVY 001", "DIVVY 001 - Warehouse test station", "Hubbard Bike-checking (LBS-WH-TEST)", "Pawel Bialowas - Test- PBSC charging station", "DIVVY CASSETTE REPAIR MOBILE STATION", "2059 Hastings Warehouse Station", "Hastings WH 2", "Throop/Hastings Mobile Station"))
+```
+
+## 3.5.1 Confirm the data removal
+
+Confirms removal where ride_length_min is greater than 1,440 minutes (24 hours)
+
+```{r echo=TRUE, warning=FALSE}
+sum(bike_rides_v2$ride_length_min > 1440)
+```
+
+
+
+Confirms removal where ride_length_min is less than 1 minute (or 60 seconds)
+
+```{r echo=TRUE, warning=FALSE}
+sum(bike_rides_v2$ride_length_min < 1)
+```
+
+
+Confirms removal of rides related to test/repair stations
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% filter(end_station_id %in% c("DIVVY 001", "DIVVY 001 - Warehouse test station", "Hubbard Bike-checking (LBS-WH-TEST)", "Pawel Bialowas - Test- PBSC charging station", "DIVVY CASSETTE REPAIR MOBILE STATION", "2059 Hastings Warehouse Station", "Hastings WH 2", "Throop/Hastings Mobile Station")) %>% 
+  count(end_station_id)
+```
+  
+  
+Confirms removal of rides related to test/repair stations
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% filter(end_station_id %in% c("DIVVY 001", "DIVVY 001 - Warehouse test station", "Hubbard Bike-checking (LBS-WH-TEST)", "Pawel Bialowas - Test- PBSC charging station", "DIVVY CASSETTE REPAIR MOBILE STATION", "2059 Hastings Warehouse Station", "Hastings WH 2", "Throop/Hastings Mobile Station")) %>% 
+  count(end_station_id)
+```
+  
+  
+Confirms removal where end_lat & end_lng were both missing
+
+```{r echo=TRUE, warning=FALSE}
+colSums(is.na(bike_rides_v2))
+```
+
+
+## 3.6 Inspect the new data frame
+
+Let's acquire a row count and look at our new data frame, bike_rides_v2. We had 5,621,147 rows of data after cleaning it, which implies we deleted a total of 134,547 rows.
+
+```{r echo=TRUE, warning=FALSE}
+nrow(bike_rides_v2)
+```
+
+```{r echo=TRUE, warning=FALSE}
+glimpse(bike_rides_v2)
+```
+
+
+We are still missing some start and finish station names and ids, but we have the start and end lat and lng for these, so we can work with this data if necessary. It would not be a major deal if we removed it because it accounts for a small percentage of the data. We'll keep it for the time being.
+
+```{r echo=TRUE, warning=FALSE}
+colSums(is.na(bike_rides_v2))
+```
+
+
+## 3.7 Verify the data is clean and ready to analyze
+
+Before proceeding to the analysis phase, I'll perform a brief check to ensure the data is now clean, correct, consistent, and complete.
+
+* Checked for duplicates: there are no duplicate values in the data.
+* Missing value checks were performed, and some data with missing values were eliminated.
+* Outliers were excluded (ride lengths > 24 hours).
+* Data accuracy was verified: after cleaning up the data, the remaining data remained intact.
+* Data completeness has been verified: the data for the previous 12 months is complete.
+* Data consistency was checked: after cleaning up the data, the data for the previous 12 months remained consistent.
+* Data relevance has been verified: the dataset for the last 12 months is current and relevant.
+* Checked for relevance: the data is relevant to answering the business questions.
+* Data formats were checked: The columns are formatted correctly.
+* Date and time format consistency: the date and time columns are consistent.
+* I looked for meaningful column names and found the following: altered and added a few cols to ensure that everything is clear and significant
+* Overall impression: this is a great set of data that is consistent, well-formatted, and makes sense.
+ 
+
+
+# Step 4 : Analyzing and Visualizing the Data
+At this point, we work with the data to analyze and examine it in various ways. I'll use functions to assist me in examining relationships and trends while staying focused on investigating how annual members and casual riders use Cyclistic bikes differently.
+
+
+## 4.1 Summary of the data at the start of analysis
+
+```{r echo=TRUE, warning=FALSE}
+summary(bike_rides_v2)
+```
+
+
+## 4.2 Casual Rider vs Member Rider
+
+Count and Percentage breakdown of the two user types: the casual rider vs the member rider
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type) %>% 
+  summarise(count = n(), Percentage = n()/nrow(bike_rides_v2)*100)
+```
+
+
+Visualizing total rides by user type
+
+
+```{r echo=TRUE, warning=FALSE}
+ggplot(bike_rides_v2, aes(user_type, fill = user_type)) +
+  geom_bar() +
+  labs(x = "User Type", y = "Count", title = "Total Rides by User Type: Casual vs Member") +
+   annotate("text",x=1,y=2000000,label="2,295,882 / (41%)",color="black",size=3.5) +
+   annotate("text",x=2,y=3000000,label="3,325,265 / (59%)",color="black",size=3.5)
+```
+
+
+**Key insight:**
+
+* 3,325,265 (or 59%) of riders are member riders, while 2,295,882 (or 41%) are casual riders
+ 
+
+Visualizing total rides by user type and bike type
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, bike_type) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x = user_type, y = count, fill = bike_type)) +
+  geom_bar(stat = "identity", width = 0.3)
+  labs(x="Bike Type", y="Number of Rides", title = "Total Rides by user type and bike type")
+```
+
+
+**Key insight:**
+
+* Member and casual riders use both the classic and electric bike, while only casual users use docked bikes.
+
+
+## 4.3 Analyzing Ride Length
+
+length of each trip (in minutes)
+```{r echo=TRUE, warning=FALSE}
+summary(bike_rides_v2$ride_length_min)
+```
+
+
+**Key insights:**
+
+* Average of all ride lengths is 16.63 minutes
+* Minimum of all ride lengths is 1 minute
+* Maximum of all ride lengths is right under 24 hours (or 1440 minutes)
+* (this aligns with our data cleaning which removed < 1 min & > 24 hours)
+
+
+Average ride length of each trip (in minutes) by user type
+
+```{r echo=TRUE, warning=FALSE}
+aggregate(bike_rides_v2$ride_length_min ~ bike_rides_v2$user_type, FUN = mean)
+```
+
+
+**Taking a closer look at ride lengths**
+
+I'm summarizing the data by ride length here to see if anything pops out. According to the table, 5,453,815 of the rides are 60 minutes or less. This is an important topic to concentrate on.
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>%
+  group_by(user_type) %>%
+  summarize(`<= 5min` = sum(ride_length_min <= 5),
+            `<= 12min` = sum(ride_length_min <= 12),
+            `<= 20min` = sum(ride_length_min <= 20),
+            `<= 45min` = sum(ride_length_min <= 45),
+            `<= 60min` = sum(ride_length_min <= 60),
+            `> 2hrs` = sum(ride_length_min > 120),
+            `> 4hrs` = sum(ride_length_min > 240),
+            `> 6hrs` = sum(ride_length_min > 360)) %>%
+  add_row(user_type = "Total",
+          `<= 5min` = sum(.$`<= 5min`),
+          `<= 12min` = sum(.$`<= 12min`),
+          `<= 20min` = sum(.$`<= 20min`),
+          `<= 45min` = sum(.$`<= 45min`),
+          `<= 60min` = sum(.$`<= 60min`),
+          `> 2hrs` = sum(.$`> 2hrs`),
+          `> 4hrs` = sum(.$`> 4hrs`),
+          `> 6hrs` = sum(.$`> 6hrs`))
+```
+
+**Key insights:**
+
+* 97% of all rides are 60 minutes or less
+* 79% of all rides are 20 minutes or less
+* 56% of all rides are less than 15 minutes
+* In my opinion, this area is crucial to gathering more data and developing a marketing strategy.
+
+
+Looking strictly at ride lengths under 12 minutes
+
+**Key insights:**
+
+* 67% of these riders are member riders
+* This is double the casual riders in this category
+
+
+Let’s look strictly at ride lengths <= 20 minutes
+
+**Key insights:**
+
+* 64% of these riders are member riders
+* As the ride length increased, we see a slight shift in the breakdown
+
+
+
+
+This tables shows us that 56% of the rides are less than 12 minutes and 79% of the rides are 20 minutes or less.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+   group_by(user_type) %>% 
+  summarize("<12 min" = sum(ride_length_min < 11.99),
+            "12-20 min" = sum(ride_length_min >= 12 & ride_length_min <= 20.99),
+            "21-30 min" = sum(ride_length_min >= 21 & ride_length_min <= 30.99),
+            "31-60 min" = sum(ride_length_min >= 31 & ride_length_min <= 60),
+            "61-120 min" = sum(ride_length_min >= 60.01 & ride_length_min <= 120.99),
+            "121-240 min" = sum(ride_length_min >= 121 & ride_length_min <= 240.99),
+            "241+min" = sum(ride_length_min >= 241))  
+```
+
+Adding a column to create ride length categories to get a better visual in R
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 <- bike_rides_v2 %>% mutate(ride_length_cat = case_when(
+                        ride_length_min < 11.99 ~ "< 12 min",
+                        ride_length_min >= 12 & ride_length_min <= 20.99 ~ "12-20 min",
+                        ride_length_min >= 21 & ride_length_min <= 30.99  ~ "21-30 min",
+                        ride_length_min >= 31 & ride_length_min <= 60.99  ~ "31-60 min",
+                        ride_length_min >= 60 & ride_length_min <= 120.99  ~ "61-120 min",
+                        ride_length_min >= 121 & ride_length_min <= 240.99  ~ "121-240 min",
+                        ride_length_min >= 241  ~ "241+ min"))
+```
+
+
+
+
+Visualizing total rides by user type and ride length category
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, ride_length_cat) %>% 
+  summarise(count = n()) %>%
+  ggplot(aes(x=factor(ride_length_cat, level = c("< 12 min", "12-20 min", "21-30 min", "31-60 min","61-120 min", "121-240 min", "241+ min")), y = count, fill = user_type)) + 
+  geom_col(position = "dodge") +
+  labs(x="Ride Length Category", y="Number of Rides", title = "Total Rides by user type and ride length category")
+```
+
+**Key insight:**
+
+* We can clearly see how the majority of rides fall into the first two categories
+
+
+
+Average Ride length in minutes of those rides in the “< 12 min” category.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% filter(ride_length_cat == "< 12 min") %>% 
+  group_by(user_type) %>% 
+  summarize(avg_ride_length=mean(ride_length_min))
+```
+
+
+Average Ride length in minutes of those rides in the “<= 20 min” category.
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% filter(ride_length_cat == "< 12 min" | ride_length_cat== "12-20 min") %>% 
+  group_by(user_type) %>% 
+  summarize(avg_ride_length=mean(ride_length_min))
+```
+
+
+Visualizing average ride length of each trip (in minutes) by user type and hour of day
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, hour) %>% 
+  summarise(count = n(), average_ride_length=mean(ride_length_min)) %>% 
+  arrange(user_type, hour) %>% 
+  ggplot(aes(x=factor(hour, level= c(6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3,4,5)), y=average_ride_length, fill=user_type)) + 
+  geom_col(position = "dodge") +
+  labs(x="Hour of day", y="Ride Length (in minutes)", title = "Average ride length by user type and hour of day")
+```
+
+**Key insight:**
+
+* Casual riders average longer rides than member riders, peaking between 10AM - 2PM
+
+
+
+Visualizing average ride length of each trip (in minutes) by user type and time of day
+
+```{r echo=TRUE, warning=FALSE}
+axis_labels <- c("Early Morning \n6am-9am", "Mid Morning \n9am-12pm", "Afternoon \n12pm-6pm", "Evening \n6pm-11pm", "Early Night \n11pm-3am", "Wee Night \n3am-6am")
+
+bike_rides_v2 %>% 
+  group_by(user_type, time_of_day) %>% 
+  summarise(count = n(), average_ride_length=mean(ride_length_min)) %>% 
+  ggplot(aes(x=factor(time_of_day, level= c("Early Morning", "Mid Morning", "Afternoon", "Evening", "Early Night", "Late Night")), y=average_ride_length, fill=user_type)) + 
+  geom_col(position = "dodge", width = 0.4) +
+  labs(x="Time of Day", y="Ride Length (in minutes)", title = "Average ride length by user type and time of day") +
+  scale_x_discrete(labels = axis_labels)
+```
+
+**Key insights:**
+
+* Ride length for casual riders peaks mid morning through afternoon
+* Ride length for member riders remains more steady throughout the day
+ 
+ 
+ 
+ 
+Average ride length of each trip (in minutes) by user type and day of the week
+
+```{r echo=TRUE, warning=FALSE}
+aggregate(bike_rides_v2$ride_length_min ~ bike_rides_v2$user_type + bike_rides_v2$day_of_week, FUN = mean)
+```
+
+
+
+Visualizing average ride length of each trip (in minutes) by user type and day of the week
+
+```{r}
+bike_rides_v2 %>% 
+  group_by(user_type, day_of_week) %>% 
+  summarise(count = n(), average_ride_length=mean(ride_length_min)) %>% 
+  ggplot(aes(x=factor(day_of_week, level= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")), y=average_ride_length, fill=user_type)) + 
+  geom_col(position = "dodge", width = 0.4) + 
+  labs(x="Day of Week", y="Ride Length (in minutes)", title = "Average ride length by user type and day of the week")
+```
+
+**Key insight:**
+
+* Both riders take longer rides on weekends
+
+
+## 4.4  Recap of analysis on riders and ride length so far
+
+* My data set consists of 5,621,147 rides
+* 2,295,882 (41%) of these rides are casual riders
+* 3,325,265 (59%) of these rides are member riders
+* Both casual and member riders tend to use the classic and electric bikes
+* Member riders take more rides
+* Casual riders average longer rides
+ 
+
+* Average of all ride lengths is 16.63 minutes
+* Average ride length for all casual riders is 22.37 minutes
+* Average ride length for all member riders is 12.65 minutes
+ 
+
+* 5,453,815 (97%) of all rides are <= 60 min
+* 4,428,315 (79%) of all rides are <= 20 min
+* 3,151,382 (56%) of all rides are < 12 min
+ 
+
+When focused on ride lengths under 12 minutes:
+* 67% of these riders are member riders
+* Average ride length for casual riders in the “<12 min” category is 7.17 minutes
+* Average ride length for member riders in the “<12 min” category is 6.44 minutes
+ 
+
+When focused on ride lengths <= 20 minutes:
+* 64% of these riders are member riders
+* Average ride length for casual riders in the “<=20 min” category is 10.27 minutes
+* Average ride length for member riders in the “<=20 min” category is 8.76 minutes
+
+
+## 4.5 Analyzing total rides by user type and hour of the day
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, hour) %>% 
+  summarise(count = n()) %>%  
+  arrange(user_type, hour) %>% 
+  ggplot(aes(x=factor(hour, level= c(6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3,4,5)), y=count, fill=user_type)) + 
+  geom_col(position = "dodge") +
+  labs(x="Hour of day", y="Number of Rides", title = "Total Rides by user type and hour of day")
+```
+
+
+**Key Insights:**
+
+* Member riders show a strong use of rides starting at 6am and peaking at 8am and then again peaking further from 4pm to 6pm.
+* Casual rides also peak from 4pm to 6 pm.
+Member riders show a strong use of rides starting at 6am and peaking at 8am and then again peaking further from 4pm to 6pm.
+Casual rides also peak from 4pm to 6 pm.
+
+
+
+Total rides by user type and by time of day
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+   group_by(user_type) %>% 
+  summarize("Early Morning" = sum(time_of_day == "Early Morning"),
+            "Mid Morning" = sum(time_of_day == "Mid Morning"),
+            "Afternoon" = sum(time_of_day == "Afternoon"),
+            "Evening" = sum(time_of_day == "Evening"),
+            "Early Night" = sum(time_of_day == "Early Night"),
+            "Late Night" = sum(time_of_day == "Late Night"))
+```
+
+
+Visualizing total rides by user type and by time of day
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, time_of_day) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x=factor(time_of_day, level= c("Early Morning", "Mid Morning", "Afternoon", "Evening", "Early Night", "Late Night")), y=count, fill=user_type)) + 
+  geom_col(position = "dodge", width = 0.4) + 
+  labs(x="Time of Day", y="Number of Rides", title = "Total Rides by user type and time of day") +
+  scale_x_discrete(labels = axis_labels)
+```
+
+
+**Key insight:**
+
+* 79% of early morning rides are taken by member riders.
+* Rides peak in the afternoon and evening for both riders.
+ 
+ 
+ 
+Another visual for total rides by user type and by time of day
+
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, time_of_day) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x=factor(time_of_day, level= c("Early Morning", "Mid Morning", "Afternoon", "Evening", "Early Night", "Late Night")), y=count, color=user_type)) + 
+  geom_point() + geom_line(aes(group = user_type)) +
+  labs(x="Time of Day", y="Number of Rides", title = "Total Rides by user type and time of day") + ylim(0, NA) +
+  scale_x_discrete(labels = axis_labels)
+```
+
+
+
+
+## 4.6 Analyzing total rides by user type and day of the week
+
+Total rides by user type and day of the week
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+   group_by(user_type) %>% 
+  summarize("Monday" = sum(day_of_week == "Monday"),
+            "Tuesday" = sum(day_of_week == "Tuesday"),
+            "Wednesday" = sum(day_of_week == "Wednesday"),
+            "Thursday" = sum(day_of_week == "Thursday"),
+            "Friday" = sum(day_of_week == "Friday"),
+            "Saturday" = sum(day_of_week == "Saturday"),
+            "Sunday" = sum(day_of_week == "Sunday"))
+```
+
+
+
+Visualizing total rides by user type and day of the week
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, day_of_week) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x=factor(day_of_week, level= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")), y=count, fill=user_type)) + 
+  geom_col(position = "dodge", width = 0.4) + 
+  labs(x="Day of Week", y="Number of Rides", title = "Total Rides by user type and day of the week")
+```
+
+
+**Key insight:**
+
+* Member riders take the most rides between Monday through Thursday and decline a little over the weekend * Casual riders take most rides on the weekend.
+ 
+ 
+ 
+Another visualization of total rides by user type and day of the week
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, day_of_week) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x=factor(day_of_week, level= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")), y=count, color=user_type)) + 
+  geom_point() + geom_line(aes(group = user_type)) + 
+  labs(x="Day of Week", y="Number of Rides", title = "Total Rides by user type and day of the week") +
+   ylim(0, NA)
+```
+
+
+
+## 4.7 Analyzing total rides by user type and season
+
+
+Visualizing total rides by user type and season
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  group_by(user_type, season) %>% 
+  summarise(count = n()) %>% 
+  ggplot(aes(x=factor(season, level= c("Spring", "Summer", "Fall", "Winter")), y=count, fill=user_type)) + 
+  geom_col(position = "dodge", width = 0.4) + 
+  labs(x="Season of Year", y="Number of Rides", title = "Total Rides by user type and season of the year")
+```
+
+
+**Key insights:**
+
+* In each season we see more member rides.
+* Both riders peak in summer and decline in winter.
+ 
+ 
+ 
+## 4.8 Analyzing the top five starting and ending stations by user types
+
+
+Top five starting stations for casual riders
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  filter(!(is.na(start_station_name))) %>% 
+  filter(user_type == "casual") %>% 
+  group_by(start_station_name) %>% 
+  summarize(count=n()) %>% 
+  arrange(-count) %>% 
+  top_n(5)
+```
+
+
+Visualizing top five starting stations for casual riders
+
+```{r  echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  filter(!(is.na(start_station_name))) %>% 
+  filter(user_type == "casual") %>% 
+  group_by(start_station_name) %>% 
+  summarize(count=n()) %>% 
+  arrange(-count) %>% 
+  top_n(5) %>% 
+  mutate(start_station_name= fct_reorder(start_station_name, count)) %>% 
+  ggplot(aes(x=start_station_name, y=count, fill=count)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(x="Number of Rides", y="Start Station Name", title="Top 5 starting stations for casual riders")
+```
+
+
+
+Top five ending stations for casual riders
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  filter(!(is.na(end_station_name))) %>% 
+  filter(user_type == "casual") %>% 
+  group_by(end_station_name) %>% 
+  summarize(count=n()) %>% 
+  arrange(-count) %>% 
+  top_n(5)
+```
+
+
+**Key insight:**
+
+* The top 5 starting and ending stations are the same for casual riders.
+* The top starting and ending station for casual riders is Streeter Dr & Grand Ave - situated near a park and shoreline sightseeing - vacationers are likely visiting this area.
+
+
+
+Top five starting stations for member riders
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  filter(!(is.na(start_station_name))) %>% 
+  filter(user_type == "member") %>% 
+  group_by(start_station_name) %>% 
+  summarize(count=n()) %>% 
+  arrange(-count) %>% 
+  top_n(5)
+```
+
+
+Visualizing top five starting stations for member riders
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  filter(!(is.na(start_station_name))) %>% 
+  filter(user_type == "member") %>% 
+  group_by(start_station_name) %>% 
+  summarize(count=n()) %>% 
+  arrange(-count) %>% 
+  top_n(5) %>% 
+  mutate(start_station_name= fct_reorder(start_station_name, count)) %>% 
+  ggplot(aes(x=start_station_name, y=count, fill=count)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(x="Number of Rides", y="Start Station Name", title="Top 5 starting stations for member riders")
+```
+
+
+
+
+Top five ending stations for member riders
+
+```{r echo=TRUE, warning=FALSE}
+bike_rides_v2 %>% 
+  filter(!(is.na(end_station_name))) %>% 
+  filter(user_type == "member") %>% 
+  group_by(end_station_name) %>% 
+  summarize(count=n()) %>% 
+  arrange(-count) %>% 
+  top_n(5)
+```
+
+
+**Key insight:**
+
+* The top 5 starting and ending stations are the same for member riders except for one station.
+* The top starting and ending station for member riders is Ellis Ave & 60th St which is situated within the University of Chicago - this suggests that students, faculty and staff are likely using this system.
+
+
+
+
+## 4.9 Export summary file for further analysis
+ 
+
+Creating a csv file that can be exported
+
+```{r echo=TRUE, warning=FALSE}
+write_csv(bike_rides_v2, file = "bike_rides_v2.csv")
+```
+
+
+
+
+
+# Step 5 : Share your findings with your audience
+For purposes of this project, I will knit this Rmd file to PDF and then share to a public Github repository.
+
+
+
+# Step 6: Act on the data and use the analysis results
+
+This step entails summarizing the findings of the investigation and making recommendations to address the business questions.
+
+
+## 6.1 Conclusions from the analysis
+
+* 97% of all rides are 60 minutes or less
+* 79% of all rides are 20 minutes or less
+* 56% of all rides are less than 12 minutes
+
+
+* Looking strictly at ride lengths under 12 minutes, 67% of these riders are member riders which is double the casual riders in this category.
+* Looking strictly at ride lengths <=20 minutes, 64% of these riders are member riders.
+
+
+
+* Member riders make up the majority of riders, take more rides, take shorter rides and the number of their rides peaks Monday through Thursday, declining a little over the weekend.
+* 79% of early morning rides are member riders.
+* The top starting station for member riders is Ellis Ave & 60th St - situated within the University of Chicago - students, faculty and staff are likely using this system
+
+
+* Casual riders average longer rides, take more rides on the weekends and their rides peak in summer.
+* The top starting station for casual riders is Streeter Dr & Grand Ave - situated near a park and shoreline sightseeing - vacationers are likely visiting this area.
+ 
+* In each season we see more member rides, but both riders peak in summer and decline in winter.
+
+
+## 6.2 Additional data analysis to consider 
+
+The public dataset utilized for this study has limitations due to user privacy protection. In an ideal world, the marketing team would use the entire dataset to conduct the following extra analysis:
+
+* Determining which casual riders are locals and paying attention to their riding patterns.
+* Separating single rider and day pass riders.
+* How many of each category do we have?
+* What is their riding style? Who rides many times every day? What are their plans?
+* Examine the number and length of journeys taken by local casual riders.
+
+
+* Examining member riders' riding habits more closely.
+* The number of journeys, the length of the travels, and who rides many times a day? What are their plans?
+
+
+* What is the surrounding scenery like for both member bikers and local casual riders?
+* Do they reside in a densely populated area?
+* Are there any significant employers nearby?
+* Are there any educational or medical facilities nearby?
+* Determine whether the local infrastructure encourages cycling to work, riding to school, riding to grocery stores, eating establishments, shopping, coffee shops, and social events.
+
+
+* Collect socioeconomic and cultural demographics to determine how these factors influence these two groups' riding behaviors. Use data to create a marketing plan.
+
+
+
+## 6.3 Recommendations based on data insights
+
+Marketing is a continuous process.As a first phase, consider a plan focused on the top ride length categories: < 12 minutes and <= 20 min. Consider which places surrounding the bike stations will best complement/support/facilitate this trip length.
+
+
+
+* Raise awareness of the convenience, affordability, accessibility, green options, and common uses for bike rides <=20 minutes
+* Market to people whose home area and daily travel needs likely align well with your bike system. Focusing on dense and walkable areas, partnering with schools and companies.
+  + Use social media to highlight member riders who are already riding their bikes to work, school, and the gym, and to meet friends.
+  + To market sponsored member subscriptions to students and employees, partner with schools and businesses inside your bike system where your bike system may facilitate <12- to 20 minute rides.
+  
+  
+* Furthermore, there is an opportunity to market around pricing. Calculate each rider's average usage and rider fees to identify who might benefit from enrolling in the annual membership plan. As an example:
+  + One-of-a-Kind Day Pass Riders that utilize the Day Pass more than eight times each year
+  + Unique Single Riders who bike more than 34 Single Rides in a calendar year or who cycle at least 3 Single Rides each month
+  + Reach out to casual riders who spend money on fees and overage costs and would benefit much from converting to an annual membership.    While we lose money on this member in the short term, we will build loyalty, and this consumer is likely to recommend our services.
+
+* Offer a prize for recruiting a friend to bike to work or school for members who already ride to work or school.
+
+# Conclusion
+
+Thank you for taking the time to look at my capstone project! Using real-world data and a business problem, this project guided me through the data analysis process from beginning to end. It's incredibly pleasant to accomplish this in R and RStudio. I'm ecstatic and eager to advance in the field of data analysis.
+
+
+
+
+
+
+ 
