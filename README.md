@@ -3,7 +3,7 @@
 This repository contains the code and analysis for the Cyclistic Bike Share Case Study. The goal of this project is to analyze the usage patterns and differences between annual members and casual riders of the Cyclistic bike-sharing program.
 
 ## Author
-Created by [Aryan Juyal]
+Created by **Aryan Juyal**
 
 ## Table of Contents
 - [Project Overview](#project-overview)
